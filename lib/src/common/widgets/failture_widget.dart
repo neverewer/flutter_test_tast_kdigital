@@ -20,8 +20,10 @@ class FailureWidget extends StatelessWidget {
     }
 
     switch (err.runtimeType) {
-      case RemoteDataProviderException:
+      case const (RemoteDataProviderException):
         return 'Remote data source exception. \nPlease try again.';
+      case const (ConnectionException):
+        return 'Connection exception. \nPlease check your internet connection and try again.';
       default:
         return null;
     }

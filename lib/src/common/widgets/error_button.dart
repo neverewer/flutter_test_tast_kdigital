@@ -21,9 +21,9 @@ class ErrorButton extends StatelessWidget {
           shape: const MaterialStatePropertyAll(
               RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(16)))),
         ),
-        child: Text(
+        child: const Text(
           'Try Again',
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 18,
             color: Color(0xFF313341),
           ),

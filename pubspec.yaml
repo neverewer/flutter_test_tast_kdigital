@@ -18,6 +18,7 @@ dependencies:
   bloc_concurrency: ^0.2.3
   l: ^4.0.2
   cached_network_image: ^3.3.1
+  meta: ^1.10.0
 
 dev_dependencies:
   flutter_test:

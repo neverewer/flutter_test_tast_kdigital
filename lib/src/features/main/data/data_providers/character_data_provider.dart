@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:http/http.dart';
 import 'package:kdigital_test/src/common/utils/constants/api_constants.dart';
 import 'package:kdigital_test/src/common/utils/exceptions/network_exception.dart';
@@ -24,6 +26,11 @@ final class CharactersDataProviderImpl implements ICharactersDataProvider {
         return CharactersInfo.fromJson(jsonResponse);
       }
       throw RemoteDataProviderException(statusCode: response.statusCode);
+    } on SocketException catch (e, stackTrace) {
+      Error.throwWithStackTrace(
+        ConnectionException(message: 'ConnectionException: $e'),
+        stackTrace,
+      );
     } on Object catch (e, stackTrace) {
       Error.throwWithStackTrace(e, stackTrace);
     }
