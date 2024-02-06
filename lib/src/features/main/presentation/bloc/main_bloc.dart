@@ -15,11 +15,11 @@ class MainBloc extends Bloc<MainEvent, MainState> implements EventSink<MainEvent
   })  : _characterRepository = repository,
         super(
           initialState ??
-              MainState.idle(
-                data: null,
-                currentPage: null,
-                hasReachedMax: null,
-                pages: null,
+              const MainState.idle(
+                data: [],
+                currentPage: 1,
+                hasReachedMax: false,
+                pages: 1,
                 message: 'Initial idle state',
               ),
         ) {
@@ -40,27 +40,38 @@ class MainBloc extends Bloc<MainEvent, MainState> implements EventSink<MainEvent
   /// Fetch event handler
   Future<void> _fetch(MainEvent$Fetch event, Emitter<MainState> emit) async {
     try {
-      emit(MainState.processing(data: state.data, currentPage: null, hasReachedMax: null, pages: null));
+      emit(
+        MainState.processing(
+          data: state.data,
+          currentPage: state.currentPage,
+          hasReachedMax: state.hasReachedMax,
+          pages: state.pages,
+        ),
+      );
 
-      final initialPage = 1;
+      const initialPage = 1;
       final charactersInfo = await _characterRepository.getCharacters(initialPage);
 
-      emit(MainState.successful(
-        data: charactersInfo.characters,
-        currentPage: initialPage,
-        hasReachedMax: false,
-        pages: charactersInfo.pages,
-      ));
+      emit(
+        MainState.successful(
+          data: charactersInfo.characters,
+          currentPage: initialPage,
+          hasReachedMax: false,
+          pages: charactersInfo.pages,
+        ),
+      );
     } on Object catch (err, stackTrace) {
       l.e('An error occurred in the MainBLoC: $err', stackTrace);
 
-      emit(MainState.error(
-        data: state.data,
-        currentPage: null,
-        hasReachedMax: null,
-        pages: null,
-        error: err,
-      ));
+      emit(
+        MainState.error(
+          data: state.data,
+          currentPage: state.currentPage,
+          hasReachedMax: state.hasReachedMax,
+          pages: state.pages,
+          error: err,
+        ),
+      );
       rethrow;
     }
   }
@@ -68,39 +79,45 @@ class MainBloc extends Bloc<MainEvent, MainState> implements EventSink<MainEvent
   Future<void> _add(MainEvent$Add event, Emitter<MainState> emit) async {
     try {
       final currentPage = state.currentPage;
-      final data = state.data ?? List.empty();
+      final data = state.data;
       final pages = state.pages ?? 0;
-      final newPage = currentPage == null ? 1 : currentPage + 1;
+      final newPage = currentPage + 1;
 
       if (newPage > pages) {
-        emit(MainState.successful(
-          data: data,
-          currentPage: newPage,
-          hasReachedMax: true,
-          pages: pages,
-        ));
+        emit(
+          MainState.successful(
+            data: data,
+            currentPage: newPage,
+            hasReachedMax: true,
+            pages: pages,
+          ),
+        );
         return;
       }
 
       final newCharactersInfo = await _characterRepository.getCharacters(newPage);
       data.addAll(newCharactersInfo.characters);
 
-      emit(MainState.successful(
-        data: data,
-        currentPage: newPage,
-        hasReachedMax: false,
-        pages: newCharactersInfo.pages,
-      ));
+      emit(
+        MainState.successful(
+          data: data,
+          currentPage: newPage,
+          hasReachedMax: false,
+          pages: newCharactersInfo.pages,
+        ),
+      );
     } on Object catch (err, stackTrace) {
       l.e('An error occurred in the MainBLoC: $err', stackTrace);
 
-      emit(MainState.error(
-        data: state.data,
-        currentPage: null,
-        hasReachedMax: null,
-        pages: null,
-        error: err,
-      ));
+      emit(
+        MainState.error(
+          data: state.data,
+          currentPage: state.currentPage,
+          hasReachedMax: state.hasReachedMax,
+          pages: state.pages,
+          error: err,
+        ),
+      );
       rethrow;
     }
   }

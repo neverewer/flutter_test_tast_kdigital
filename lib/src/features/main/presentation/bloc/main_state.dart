@@ -13,40 +13,40 @@ sealed class MainState extends _$MainStateBase {
   /// Idling state
   /// {@macro main_state}
   const factory MainState.idle({
-    required MainEntity? data,
-    required int? currentPage,
+    required MainEntity data,
+    required int currentPage,
     required int? pages,
-    required bool? hasReachedMax,
+    required bool hasReachedMax,
     String message,
   }) = MainState$Idle;
 
   /// Processing
   /// {@macro main_state}
   const factory MainState.processing({
-    required MainEntity? data,
-    required int? currentPage,
+    required MainEntity data,
+    required int currentPage,
     required int? pages,
-    required bool? hasReachedMax,
+    required bool hasReachedMax,
     String message,
   }) = MainState$Processing;
 
   /// Successful
   /// {@macro main_state}
   const factory MainState.successful({
-    required MainEntity? data,
-    required int? currentPage,
+    required MainEntity data,
+    required int currentPage,
     required int? pages,
-    required bool? hasReachedMax,
+    required bool hasReachedMax,
     String message,
   }) = MainState$Successful;
 
   /// An error has occurred
   /// {@macro main_state}
   const factory MainState.error({
-    required MainEntity? data,
-    required int? currentPage,
+    required MainEntity data,
+    required int currentPage,
     required int? pages,
-    required bool? hasReachedMax,
+    required bool hasReachedMax,
     required Object error,
     String message,
   }) = MainState$Error;
@@ -130,23 +130,23 @@ abstract base class _$MainStateBase {
 
   /// Data entity payload.
   @nonVirtual
-  final MainEntity? data;
+  final MainEntity data;
 
   @nonVirtual
-  final int? currentPage;
+  final int currentPage;
 
   @nonVirtual
   final int? pages;
 
   @nonVirtual
-  final bool? hasReachedMax;
+  final bool hasReachedMax;
 
   /// Message or state description.
   @nonVirtual
   final String message;
 
   /// Has data?
-  bool get hasData => data != null;
+  bool get hasData => data.isNotEmpty;
 
   /// If an error has occurred?
   bool get hasError => maybeMap<bool>(orElse: () => false, error: (_) => true);
