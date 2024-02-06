@@ -54,15 +54,6 @@ sealed class MainState extends _$MainStateBase {
     String message,
   }) = MainState$Error;
 
-  // const factory MainState.addError({
-  //   required MainEntity data,
-  //   required int currentPage,
-  //   required int pages,
-  //   required bool hasReachedMax,
-  //   required Object? error,
-  //   String message,
-  // }) = MainState$AddError;
-
   /// {@macro main_state}
   const MainState(
       {required super.data,
@@ -126,20 +117,6 @@ final class MainState$Error extends MainState with _$MainState {
       super.message = 'An error has occurred.'});
 }
 
-// /// Error
-// /// {@nodoc}
-// final class MainState$AddError extends MainState with _$MainState {
-//   /// {@nodoc}
-
-//   const MainState$AddError(
-//       {required super.data,
-//       required super.currentPage,
-//       required super.hasReachedMax,
-//       required super.pages,
-//       required super.error,
-//       super.message = 'An error has occurred.'});
-// }
-
 /// {@nodoc}
 base mixin _$MainState on MainState {}
 
@@ -200,14 +177,12 @@ abstract base class _$MainStateBase {
     required MainStateMatch<R, MainState$Processing> processing,
     required MainStateMatch<R, MainState$Successful> successful,
     required MainStateMatch<R, MainState$Error> error,
-    // required MainStateMatch<R, MainState$AddError> addError,
   }) =>
       switch (this) {
         MainState$Idle s => idle(s),
         MainState$Processing s => processing(s),
         MainState$Successful s => successful(s),
         MainState$Error s => error(s),
-        // MainState$AddError s => addError(s),
         _ => throw AssertionError(),
       };
 
@@ -217,7 +192,6 @@ abstract base class _$MainStateBase {
     MainStateMatch<R, MainState$Processing>? processing,
     MainStateMatch<R, MainState$Successful>? successful,
     MainStateMatch<R, MainState$Error>? error,
-    // MainStateMatch<R, MainState$AddError>? addError,
     required R Function() orElse,
   }) =>
       map<R>(
@@ -225,7 +199,6 @@ abstract base class _$MainStateBase {
         processing: processing ?? (_) => orElse(),
         successful: successful ?? (_) => orElse(),
         error: error ?? (_) => orElse(),
-        // addError: addError ?? (_) => orElse(),
       );
 
   /// Pattern matching for [MainState].
@@ -234,14 +207,12 @@ abstract base class _$MainStateBase {
     MainStateMatch<R, MainState$Processing>? processing,
     MainStateMatch<R, MainState$Successful>? successful,
     MainStateMatch<R, MainState$Error>? error,
-    // MainStateMatch<R, MainState$AddError>? addError,
   }) =>
       map<R?>(
         idle: idle ?? (_) => null,
         processing: processing ?? (_) => null,
         successful: successful ?? (_) => null,
         error: error ?? (_) => null,
-        // addError: addError ?? (_) => null,
       );
 
   @override
@@ -250,26 +221,3 @@ abstract base class _$MainStateBase {
   @override
   bool operator ==(Object other) => identical(this, other);
 }
-
-// import 'package:freezed_annotation/freezed_annotation.dart';
-// import 'package:kdigital_test/src/features/main/domain/entities/character.dart';
-
-// part 'main_state.freezed.dart';
-
-// typedef MainEntity = List<CharacterEntity>;
-
-// @freezed
-// abstract class MainState with _$MainState {
-//   const factory MainState.idle() = IdleState;
-
-//   const factory MainState.loading() = LoadingState;
-
-//   const factory MainState.successful({
-//     required int pages,
-//     required MainEntity characters,
-//     required int currentPage,
-//     required bool hasReachedMax,
-//   }) = SuccessfulState;
-
-//   const factory MainState.error({required Object error}) = ErrorState;
-// }

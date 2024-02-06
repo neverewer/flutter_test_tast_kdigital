@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:kdigital_test/src/common/utils/exceptions/network_exception.dart';
-import 'package:kdigital_test/src/common/widgets/error_button.dart';
-import 'package:kdigital_test/src/common/widgets/error_image.dart';
-import 'package:kdigital_test/src/common/widgets/error_text.dart';
+import 'package:kdigital_test/src/common/presentation/widgets/error_button.dart';
+import 'package:kdigital_test/src/common/presentation/widgets/error_image.dart';
+import 'package:kdigital_test/src/common/presentation/widgets/error_text.dart';
 
 class FailureWidget extends StatelessWidget {
   final Object? error;

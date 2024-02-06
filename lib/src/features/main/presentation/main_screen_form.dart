@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:kdigital_test/src/common/widgets/failture_widget.dart';
-import 'package:kdigital_test/src/common/widgets/loading_widget.dart';
+import 'package:kdigital_test/src/common/presentation/widgets/failture_widget.dart';
+import 'package:kdigital_test/src/common/presentation/widgets/loading_widget.dart';
 import 'package:kdigital_test/src/features/main/presentation/bloc/main_bloc.dart';
 import 'package:kdigital_test/src/features/main/presentation/bloc/main_event.dart';
 import 'package:kdigital_test/src/features/main/presentation/bloc/main_state.dart';
@@ -32,10 +32,6 @@ class MainScreenForm extends StatelessWidget {
                   error: state.error,
                   errorButtonCallback: () => context.read<MainBloc>().add(const MainEvent$Fetch()),
                 ),
-          // addError: (_) => MainDataWidget(
-          //   characters: state.data,
-          //   hasReachedMax: state.hasReachedMax,
-          // ),
         ),
       );
 }
