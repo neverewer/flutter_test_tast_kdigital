@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) => DependenciesScope(
         dependencies: dependencies,
-        child: MaterialApp(
+        child: const MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'Test app',
           home: MainScreen(),

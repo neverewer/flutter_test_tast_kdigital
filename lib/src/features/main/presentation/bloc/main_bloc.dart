@@ -1,7 +1,6 @@
 import 'dart:async';
-
-import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart' as bloc_concurrency;
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kdigital_test/src/features/main/domain/repositories/characters_repository.dart';
 import 'package:kdigital_test/src/features/main/presentation/bloc/main_event.dart';
 import 'package:kdigital_test/src/features/main/presentation/bloc/main_state.dart';
@@ -15,12 +14,12 @@ class MainBloc extends Bloc<MainEvent, MainState> implements EventSink<MainEvent
   })  : _characterRepository = repository,
         super(
           initialState ??
-              MainState.idle(
-                data: null,
-                currentPage: null,
-                hasReachedMax: null,
-                pages: null,
-                message: 'Initial idle state',
+              const MainState.idle(
+                data: [],
+                currentPage: 0,
+                pages: 0,
+                hasReachedMax: false,
+                error: null,
               ),
         ) {
     on<MainEvent>(
@@ -40,49 +39,65 @@ class MainBloc extends Bloc<MainEvent, MainState> implements EventSink<MainEvent
   /// Fetch event handler
   Future<void> _fetch(MainEvent$Fetch event, Emitter<MainState> emit) async {
     try {
-      emit(MainState.processing(data: state.data, currentPage: null, hasReachedMax: null, pages: null));
+      emit(const MainState.processing(
+        data: [],
+        currentPage: 0,
+        pages: 0,
+        hasReachedMax: false,
+        error: null,
+      ));
 
-      final initialPage = 1;
+      // initial page to load
+      const initialPage = 1;
+
+      // load data
       final charactersInfo = await _characterRepository.getCharacters(initialPage);
 
       emit(MainState.successful(
-        data: charactersInfo.characters,
-        currentPage: initialPage,
-        hasReachedMax: false,
-        pages: charactersInfo.pages,
-      ));
+          data: charactersInfo.characters,
+          currentPage: initialPage,
+          hasReachedMax: false,
+          pages: charactersInfo.pages,
+          error: null));
     } on Object catch (err, stackTrace) {
       l.e('An error occurred in the MainBLoC: $err', stackTrace);
 
       emit(MainState.error(
-        data: state.data,
-        currentPage: null,
-        hasReachedMax: null,
-        pages: null,
+        data: const [],
+        currentPage: 0,
+        pages: 0,
+        hasReachedMax: false,
         error: err,
       ));
+
       rethrow;
     }
   }
 
   Future<void> _add(MainEvent$Add event, Emitter<MainState> emit) async {
     try {
-      final currentPage = state.currentPage;
-      final data = state.data ?? List.empty();
-      final pages = state.pages ?? 0;
-      final newPage = currentPage == null ? 1 : currentPage + 1;
+      // Get the next page index
+      final newPage = state.currentPage + 1;
 
-      if (newPage > pages) {
+      // If we have reached the last page, return
+      if (newPage > state.pages) {
         emit(MainState.successful(
-          data: data,
-          currentPage: newPage,
+          data: state.data,
+          currentPage: state.currentPage,
           hasReachedMax: true,
-          pages: pages,
+          pages: state.pages,
+          error: null,
         ));
         return;
       }
 
+      //get data from current state
+      final data = state.data;
+
+      // load data from new page
       final newCharactersInfo = await _characterRepository.getCharacters(newPage);
+
+      //add new data to old data
       data.addAll(newCharactersInfo.characters);
 
       emit(MainState.successful(
@@ -90,17 +105,19 @@ class MainBloc extends Bloc<MainEvent, MainState> implements EventSink<MainEvent
         currentPage: newPage,
         hasReachedMax: false,
         pages: newCharactersInfo.pages,
+        error: null,
       ));
     } on Object catch (err, stackTrace) {
       l.e('An error occurred in the MainBLoC: $err', stackTrace);
 
       emit(MainState.error(
         data: state.data,
-        currentPage: null,
-        hasReachedMax: null,
-        pages: null,
+        currentPage: state.currentPage,
+        pages: state.pages,
+        hasReachedMax: state.hasReachedMax,
         error: err,
       ));
+
       rethrow;
     }
   }

@@ -14,6 +14,6 @@ class MainScreen extends StatelessWidget {
           ..add(
             const MainEvent.fetch(),
           ),
-        child: MainScreenForm(),
+        child: const MainScreenForm(),
       );
 }

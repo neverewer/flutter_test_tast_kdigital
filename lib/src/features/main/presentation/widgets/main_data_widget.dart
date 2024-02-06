@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:kdigital_test/src/common/widgets/loading_widget.dart';
 import 'package:kdigital_test/src/features/main/domain/entities/character.dart';
 import 'package:kdigital_test/src/features/main/presentation/bloc/main_bloc.dart';
 import 'package:kdigital_test/src/features/main/presentation/bloc/main_event.dart';
+import 'package:kdigital_test/src/features/main/presentation/widgets/bottom_loader.dart';
 import 'package:kdigital_test/src/features/main/presentation/widgets/character_list_item_widget.dart';
 
 class MainDataWidget extends StatefulWidget {
@@ -29,6 +29,7 @@ class _MainDataWidgetState extends State<MainDataWidget> {
     _scrollController = ScrollController()..addListener(_onScroll);
   }
 
+  @override
   void dispose() {
     _scrollController
       ..removeListener(_onScroll)
@@ -53,10 +54,10 @@ class _MainDataWidgetState extends State<MainDataWidget> {
             controller: _scrollController,
             itemCount: widget.hasReachedMax ? widget.characters.length : widget.characters.length + 1,
             itemExtent: 200,
-            padding: EdgeInsets.all(8),
+            padding: const EdgeInsets.all(8),
             itemBuilder: (context, index) {
               return index >= widget.characters.length
-                  ? LoadingWidget()
+                  ? const BottomLoader()
                   : CharacterListItemWidget(
                       character: widget.characters[index],
                     );

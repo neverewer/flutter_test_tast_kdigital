@@ -18,3 +18,15 @@ base class RemoteDataProviderException implements NetworkException {
       'statusCode: $statusCode'
       ')';
 }
+
+//if there is no internet connection
+final class ConnectionException extends RemoteDataProviderException {
+  /// {@macro connection_exception}
+  const ConnectionException({super.message, super.statusCode});
+
+  @override
+  String toString() => 'ConnectionException('
+      'message: $message,'
+      'statusCode: $statusCode'
+      ')';
+}

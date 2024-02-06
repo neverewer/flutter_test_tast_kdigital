@@ -13,43 +13,55 @@ sealed class MainState extends _$MainStateBase {
   /// Idling state
   /// {@macro main_state}
   const factory MainState.idle({
-    required MainEntity? data,
-    required int? currentPage,
-    required int? pages,
-    required bool? hasReachedMax,
+    required MainEntity data,
+    required int currentPage,
+    required int pages,
+    required bool hasReachedMax,
+    required Object? error,
     String message,
   }) = MainState$Idle;
 
   /// Processing
   /// {@macro main_state}
   const factory MainState.processing({
-    required MainEntity? data,
-    required int? currentPage,
-    required int? pages,
-    required bool? hasReachedMax,
+    required MainEntity data,
+    required int currentPage,
+    required int pages,
+    required bool hasReachedMax,
+    required Object? error,
     String message,
   }) = MainState$Processing;
 
   /// Successful
   /// {@macro main_state}
   const factory MainState.successful({
-    required MainEntity? data,
-    required int? currentPage,
-    required int? pages,
-    required bool? hasReachedMax,
+    required MainEntity data,
+    required int currentPage,
+    required int pages,
+    required bool hasReachedMax,
+    required Object? error,
     String message,
   }) = MainState$Successful;
 
   /// An error has occurred
   /// {@macro main_state}
   const factory MainState.error({
-    required MainEntity? data,
-    required int? currentPage,
-    required int? pages,
-    required bool? hasReachedMax,
-    required Object error,
+    required MainEntity data,
+    required int currentPage,
+    required int pages,
+    required bool hasReachedMax,
+    required Object? error,
     String message,
   }) = MainState$Error;
+
+  // const factory MainState.addError({
+  //   required MainEntity data,
+  //   required int currentPage,
+  //   required int pages,
+  //   required bool hasReachedMax,
+  //   required Object? error,
+  //   String message,
+  // }) = MainState$AddError;
 
   /// {@macro main_state}
   const MainState(
@@ -57,6 +69,7 @@ sealed class MainState extends _$MainStateBase {
       required super.currentPage,
       required super.hasReachedMax,
       required super.pages,
+      required super.error,
       required super.message});
 }
 
@@ -69,6 +82,7 @@ final class MainState$Idle extends MainState with _$MainState {
       required super.currentPage,
       required super.hasReachedMax,
       required super.pages,
+      required super.error,
       super.message = 'Idling'});
 }
 
@@ -81,6 +95,7 @@ final class MainState$Processing extends MainState with _$MainState {
       required super.currentPage,
       required super.hasReachedMax,
       required super.pages,
+      required super.error,
       super.message = 'Processing'});
 }
 
@@ -93,6 +108,7 @@ final class MainState$Successful extends MainState with _$MainState {
       required super.currentPage,
       required super.hasReachedMax,
       required super.pages,
+      required super.error,
       super.message = 'Successful'});
 }
 
@@ -100,16 +116,29 @@ final class MainState$Successful extends MainState with _$MainState {
 /// {@nodoc}
 final class MainState$Error extends MainState with _$MainState {
   /// {@nodoc}
-  final Object error;
 
   const MainState$Error(
       {required super.data,
       required super.currentPage,
       required super.hasReachedMax,
       required super.pages,
-      required this.error,
+      required super.error,
       super.message = 'An error has occurred.'});
 }
+
+// /// Error
+// /// {@nodoc}
+// final class MainState$AddError extends MainState with _$MainState {
+//   /// {@nodoc}
+
+//   const MainState$AddError(
+//       {required super.data,
+//       required super.currentPage,
+//       required super.hasReachedMax,
+//       required super.pages,
+//       required super.error,
+//       super.message = 'An error has occurred.'});
+// }
 
 /// {@nodoc}
 base mixin _$MainState on MainState {}
@@ -124,29 +153,37 @@ abstract base class _$MainStateBase {
   const _$MainStateBase(
       {required this.data,
       required this.currentPage,
-      required this.hasReachedMax,
       required this.pages,
+      required this.hasReachedMax,
+      required this.error,
       required this.message});
 
   /// Data entity payload.
   @nonVirtual
-  final MainEntity? data;
+  final MainEntity data;
 
+  //Last loaded page
   @nonVirtual
-  final int? currentPage;
+  final int currentPage;
 
+  //Total numbers of pages
   @nonVirtual
-  final int? pages;
+  final int pages;
 
+  //Has the last page been reached
   @nonVirtual
-  final bool? hasReachedMax;
+  final bool hasReachedMax;
+
+  //Received error
+  @nonVirtual
+  final Object? error;
 
   /// Message or state description.
   @nonVirtual
   final String message;
 
   /// Has data?
-  bool get hasData => data != null;
+  bool get hasData => data.isNotEmpty;
 
   /// If an error has occurred?
   bool get hasError => maybeMap<bool>(orElse: () => false, error: (_) => true);
@@ -157,29 +194,20 @@ abstract base class _$MainStateBase {
   /// Is in idle state?
   bool get isIdling => !isProcessing;
 
-  //  copyWith<R>({
-  //   MainEntity? data,
-  //   int? currentPage,
-  //   String? message,
-  // }) =>
-  //     R(
-  //       data: data,
-  //       currentPage: currentPage,
-  //       message: message ?? this.message,
-  //     );
-
   /// Pattern matching for [MainState].
   R map<R>({
     required MainStateMatch<R, MainState$Idle> idle,
     required MainStateMatch<R, MainState$Processing> processing,
     required MainStateMatch<R, MainState$Successful> successful,
     required MainStateMatch<R, MainState$Error> error,
+    // required MainStateMatch<R, MainState$AddError> addError,
   }) =>
       switch (this) {
         MainState$Idle s => idle(s),
         MainState$Processing s => processing(s),
         MainState$Successful s => successful(s),
         MainState$Error s => error(s),
+        // MainState$AddError s => addError(s),
         _ => throw AssertionError(),
       };
 
@@ -189,6 +217,7 @@ abstract base class _$MainStateBase {
     MainStateMatch<R, MainState$Processing>? processing,
     MainStateMatch<R, MainState$Successful>? successful,
     MainStateMatch<R, MainState$Error>? error,
+    // MainStateMatch<R, MainState$AddError>? addError,
     required R Function() orElse,
   }) =>
       map<R>(
@@ -196,6 +225,7 @@ abstract base class _$MainStateBase {
         processing: processing ?? (_) => orElse(),
         successful: successful ?? (_) => orElse(),
         error: error ?? (_) => orElse(),
+        // addError: addError ?? (_) => orElse(),
       );
 
   /// Pattern matching for [MainState].
@@ -204,12 +234,14 @@ abstract base class _$MainStateBase {
     MainStateMatch<R, MainState$Processing>? processing,
     MainStateMatch<R, MainState$Successful>? successful,
     MainStateMatch<R, MainState$Error>? error,
+    // MainStateMatch<R, MainState$AddError>? addError,
   }) =>
       map<R?>(
         idle: idle ?? (_) => null,
         processing: processing ?? (_) => null,
         successful: successful ?? (_) => null,
         error: error ?? (_) => null,
+        // addError: addError ?? (_) => null,
       );
 
   @override
@@ -218,3 +250,26 @@ abstract base class _$MainStateBase {
   @override
   bool operator ==(Object other) => identical(this, other);
 }
+
+// import 'package:freezed_annotation/freezed_annotation.dart';
+// import 'package:kdigital_test/src/features/main/domain/entities/character.dart';
+
+// part 'main_state.freezed.dart';
+
+// typedef MainEntity = List<CharacterEntity>;
+
+// @freezed
+// abstract class MainState with _$MainState {
+//   const factory MainState.idle() = IdleState;
+
+//   const factory MainState.loading() = LoadingState;
+
+//   const factory MainState.successful({
+//     required int pages,
+//     required MainEntity characters,
+//     required int currentPage,
+//     required bool hasReachedMax,
+//   }) = SuccessfulState;
+
+//   const factory MainState.error({required Object error}) = ErrorState;
+// }

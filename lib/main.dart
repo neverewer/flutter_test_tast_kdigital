@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:http/http.dart';
 import 'package:kdigital_test/src/common/utils/logger_utils.dart';
 import 'package:kdigital_test/src/features/app/app.dart';
@@ -14,7 +15,11 @@ import 'package:l/l.dart';
 void main() => l.capture<void>(
       () => runZonedGuarded<void>(
         () async {
-          WidgetsFlutterBinding.ensureInitialized();
+          WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+
+          //show splash screen
+          FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+
           //set orientation
           SystemChrome.setPreferredOrientations([
             DeviceOrientation.portraitUp,
@@ -29,6 +34,9 @@ void main() => l.capture<void>(
               dependencies: dependencies,
             ),
           );
+
+          //remove splash screen
+          FlutterNativeSplash.remove();
         },
         l.e,
       ),

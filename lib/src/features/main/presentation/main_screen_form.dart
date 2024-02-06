@@ -13,18 +13,29 @@ class MainScreenForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) => BlocBuilder<MainBloc, MainState>(
         builder: (context, state) => state.map(
-          idle: (_) => LoadingWidget(),
-          processing: (_) => LoadingWidget(),
+          idle: (_) => const LoadingWidget(),
+          processing: (_) => const LoadingWidget(),
           successful: (_) => state.hasData
               ? MainDataWidget(
-                  characters: state.data!,
-                  hasReachedMax: state.hasReachedMax!,
+                  characters: state.data,
+                  hasReachedMax: state.hasReachedMax,
                 )
-              : CircularProgressIndicator(),
-          error: (state) => FailureWidget(
-            error: state.error,
-            errorButtonCallback: () => context.read<MainBloc>().add(const MainEvent$Fetch()),
-          ),
+              : FailureWidget(
+                  errorButtonCallback: () => context.read<MainBloc>().add(const MainEvent$Fetch()),
+                ),
+          error: (state) => state.hasData
+              ? MainDataWidget(
+                  characters: state.data,
+                  hasReachedMax: state.hasReachedMax,
+                )
+              : FailureWidget(
+                  error: state.error,
+                  errorButtonCallback: () => context.read<MainBloc>().add(const MainEvent$Fetch()),
+                ),
+          // addError: (_) => MainDataWidget(
+          //   characters: state.data,
+          //   hasReachedMax: state.hasReachedMax,
+          // ),
         ),
       );
 }

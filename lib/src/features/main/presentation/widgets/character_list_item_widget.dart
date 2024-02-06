@@ -13,11 +13,11 @@ class CharacterListItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.only(bottom: 8),
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: ShapeDecoration(
-          color: Color.fromARGB(120, 204, 255, 255),
+          color: const Color.fromARGB(120, 204, 255, 255),
           shape: ContinuousRectangleBorder(borderRadius: BorderRadius.circular(32)),
         ),
         child: Row(
@@ -30,33 +30,33 @@ class CharacterListItemWidget extends StatelessWidget {
               progressIndicatorBuilder: (context, url, downloadProgress) => Center(
                 child: CircularProgressIndicator(value: downloadProgress.progress),
               ),
-              errorWidget: (context, url, error) => Center(
+              errorWidget: (context, url, error) => const Center(
                 child: Text(
                   'Cannot load image',
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
             ),
-            SizedBox(width: 5),
+            const SizedBox(width: 5),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     'Name: ${character.name}',
-                    style: TextStyle(fontSize: 20),
+                    style: const TextStyle(fontSize: 20),
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 2),
                   Text(
                     'Species: ${character.species}',
-                    style: TextStyle(fontSize: 18),
+                    style: const TextStyle(fontSize: 18),
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 2),
                   Text(
                     'Status: ${character.status}',
-                    style: TextStyle(fontSize: 18),
+                    style: const TextStyle(fontSize: 18),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ],
